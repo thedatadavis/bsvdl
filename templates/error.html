@@ -1,0 +1,13 @@
+<div class="box">
+    <div class="notification is-danger">
+        <p>Error processing video: {{ error }}</p>
+    </div>
+    
+    <div class="field">
+        <button class="button is-light" 
+                hx-get="/"
+                hx-target="#form-container">
+            Try Again
+        </button>
+    </div>
+</div>

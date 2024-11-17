@@ -1,0 +1,6 @@
+atproto
+ffmpeg-python
+flask
+gunicorn
+python-dotenv
+requests

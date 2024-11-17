@@ -1,0 +1,124 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='bsvdl.png') }}" alt="Bluesky Video Downloader" class="logo">
+            <h1 class="title">Bluesky Video Downloader</h1>
+        </div>
+        <div id="form-container" class="box">
+            <form id="download-form">
+                <div class="field">
+                    <label class="label">Post URL</label>
+                    <div class="control">
+                        <input class="input" type="text" name="post_url" 
+                               placeholder="https://bsky.app/profile/datadavis.com/post/3lauezagv462j" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Quality</label>
+                    <div class="control">
+                        <label class="radio">
+                            <input type="radio" name="quality" value="320p" checked>
+                            Standard Definition (320p)
+                        </label>
+                        <br>
+                        <label class="radio">
+                            <input type="radio" name="quality" value="720p">
+                            High Definition (720p)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary" type="submit" id="submit-btn">
+                            Download Video
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Loading Spinner -->
+            <div id="spinner" style="display: none;">
+                <div class="has-text-centered py-4">
+                    <button class="button is-loading is-large">Loading</button>
+                    <p class="mt-3">Processing video, please wait...</p>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="notification is-danger" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Attribution -->
+    <div class="attribution">
+        Built by <a href="https://bsky.app/profile/datadavis.com" target="_blank">datadavis.com</a>
+        <p>v0.1.2</p>
+    </div>
+</section>
+
+
+<script>
+document.getElementById('download-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const form = e.target;
+    const submitBtn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('spinner');
+    const errorMsg = document.getElementById('error-message');
+    
+    // Show spinner, hide error
+    spinner.style.display = 'block';
+    submitBtn.style.display = 'none';
+    errorMsg.style.display = 'none';
+    
+    try {
+        // Send form data
+        const response = await fetch('/process', {
+            method: 'POST',
+            body: new FormData(form)
+        });
+        
+        if (!response.ok) {
+            // Handle error response
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Download failed');
+        }
+
+        // Create blob from response
+        const blob = await response.blob();
+        
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = response.headers.get('content-disposition')?.split('filename=')[1] || 'video.mp4';
+        
+        // Trigger download
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Reset form after successful download
+        form.reset();
+        
+    } catch (error) {
+        // Show error message
+        errorMsg.textContent = error.message;
+        errorMsg.style.display = 'block';
+    } finally {
+        // Hide spinner, show button
+        spinner.style.display = 'none';
+        submitBtn.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

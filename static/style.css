@@ -1,0 +1,67 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+html, 
+body {
+    background-color: #f0f8ff;  /* pale light blue */
+    min-height: 100vh;
+    margin: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  
+  .logo {
+    height: 25px;  /* Adjust size as needed */
+    width: auto;
+  }
+  
+
+.box {
+    box-shadow: none;
+    border: 1px solid #ddd;
+}
+
+.spinner {
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0066cc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    display: none;
+    color: #dc3545;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.attribution {
+    margin-top: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.attribution a {
+    color: #3273dc;  /* Matches Bulma's default link color */
+    text-decoration: none;
+}
+
+.attribution a:hover {
+    text-decoration: underline;
+}
+
